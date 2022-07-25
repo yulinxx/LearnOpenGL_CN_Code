@@ -103,7 +103,15 @@ int main()
         -0.5f, -0.5f, 0.0f, // left  
          0.5f, -0.5f, 0.0f, // right 
          0.0f,  0.5f, 0.0f  // top   
-    }; 
+        }; 
+
+    // VBO：Vertex Buffer Object，顶点缓冲对象。
+    // 可以存储大量顶点，因而我们可以利用VBO一次性发送一大批数据到显卡上。
+
+    // VAO：Vertex Array Object，顶点数组对象。
+    // 一个VAO，配置并告诉了我们该如何使用VBO（包括如何解读VBO中的数据），以及使用哪个VBO。
+
+    // EBO：Element Buffer Object，索引缓冲对象
 
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);

@@ -107,20 +107,46 @@ int main()
 
     // VBO：Vertex Buffer Object，顶点缓冲对象。
     // 可以存储大量顶点，因而我们可以利用VBO一次性发送一大批数据到显卡上。
+    // 顶点缓冲对象VBO是在显卡存储空间中开辟出的一块内存缓存区，用于存储顶点的各类属性信息，
+    // 如顶点坐标，顶点法向量，顶点颜色数据等。在渲染时，可以直接从VBO中取出顶点的各类属性数据，
+    // 由于VBO在显存而不是在内存中，不需要从CPU传输数据，处理效率更高。
 
     // VAO：Vertex Array Object，顶点数组对象。
-    // 一个VAO，配置并告诉了我们该如何使用VBO（包括如何解读VBO中的数据），以及使用哪个VBO。
+    // 一个VAO，配置并告诉了我们该如何使用VBO（包括如何解读VBO中的数据），以及使用哪个VBO。使用VAO管理VBO
+    // VBO保存了一个模型的顶点属性信息，每次绘制模型之前需要绑定顶点的所有信息，当数据量很大时，重复这样的动作变得非常麻烦。
+    // VAO可以把这些所有的配置都存储在一个对象中，每次绘制模型时，只需要绑定这个VAO对象就可以了。
+    // VAO是一个保存了所有顶点数据属性的状态结合，它存储了顶点数据的格式以及顶点数据所需的VBO对象的引用。
+    // VAO本身并没有存储顶点的相关属性数据，这些信息是存储在VBO中的，VAO相当于是对很多个VBO的引用，把一些VBO组合在一起作为一个对象统一管理。
+    // https://blog.csdn.net/dcrmg/article/details/53556664
 
     // EBO：Element Buffer Object，索引缓冲对象
 
     unsigned int VBO, VAO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    glBindVertexArray(VAO);
 
+    glGenVertexArrays(1, &VAO); // 生成一个VAO对象
+
+    glGenBuffers(1, &VBO);  // 建VBO的第一步需要开辟（声明/获得）显存空间并分配VBO的ID,通过这个ID可以对特定的VBO内的数据进行存取操作。
+
+    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+    // 绑定VAO对象, 执行VAO绑定之后其后的所有VBO配置都是这个VAO对象的一部分，可以说VBO是对顶点属性信息的绑定，VAO是对很多个VBO的绑定。
+    glBindVertexArray(VAO);  
+
+    // 创建的VBO可用来保存不同类型的顶点数据,创建之后需要通过分配的ID绑定（bind）一下制定的VBO，
+    // 对于同一类型的顶点数据一次只能绑定一个VBO。
+    // 绑定操作通过 glBindBuffer 来实现，第一个参数指定绑定的数据类型，可以是
+    // GL_ARRAY_BUFFER, GL_ELEMENT_ARRAY_BUFFER, GL_PIXEL_PACK_BUFFER或者GL_PIXEL_UNPACK_BUFFER中的一个。
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    // 调用 glBufferData 把用户定义的数据传输到当前绑定的显存缓冲区中。
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    // 顶点数据传入GPU之后，还需要通知OpenGL如何解释这些顶点数据，这个工作由函数glVertexAttribPointer完成：
+    // 第一个参数指定顶点属性位置，与 顶点着色器 中 layout(location=0) 对应。
+    // 第二个参数指定顶点属性大小。
+    // 第三个参数指定数据类型。
+    // 第四个参数定义是否希望数据被标准化。
+    // 第五个参数是步长（Stride），指定在连续的顶点属性之间的间隔。
+    // 第六个参数表示我们的位置数据在缓冲区起始位置的偏移量。
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -152,7 +178,12 @@ int main()
         // draw our first triangle
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+
+        // OpenGL中所有的图形都是通过分解成三角形的方式进行绘制，
+        // glDrawArrays函数负责把模型绘制出来，它使用当前激活的着色器，
+        // 当前VAO对象中的VBO顶点数据和属性配置来绘制出来基本图形。
         glDrawArrays(GL_TRIANGLES, 0, 3);
+
         // glBindVertexArray(0); // no need to unbind it every time 
  
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

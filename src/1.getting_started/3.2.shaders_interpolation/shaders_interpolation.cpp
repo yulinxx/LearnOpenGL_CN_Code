@@ -10,6 +10,25 @@ void processInput(GLFWwindow *window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
+// 基本图元（Primitives）包括点，线段，三角形等，是构成实体模型的基本单位，需要在传入顶点数据的同时通知OpenGL这些顶点数据要组成的基本图元类型。
+
+// 顶点着色器（Vertex Shader）包含对一些顶点属性（数据）的基本处理。
+
+// 基本图元装配（Primitive Assembly）把所有输入的顶点数据作为输入，输出制定的基本图元。
+
+// 几何着色器（Geometry Shader）把基本图元形式的顶点的集合作为输入，可以通过产生新顶点构造出新的（或是其他的）基本图元来生成其他形状。
+
+// 细分着色器（Tessellation Shaders）可以把基本图元细分为更多的基本图形，创建出更加平滑的视觉效果。
+
+// 光栅化（Rasterization）即像素化，把细分着色器输出的基本图形映射为屏幕上网格的像素点，生成供片段着色器处理的片段（Fragment），光栅化包含一个剪裁操作，会舍弃超出定义的视窗之外的像素。
+
+// 片段着色器（Fragment Shader）的主要作用是计算出每一个像素点最终的颜色，通常片段着色器会包含3D场景的一些额外的数据，如光线，阴影等。
+
+// 测试与混合是对每个像素点进行深度测试，Alpha测试等测试并进行颜色混合的操作，这些测试与混合操作决定了屏幕视窗上每个像素点最终的颜色以及透明度。
+// 在整个渲染管线中需要自定义处理的主要是顶点着色器和片段着色器。
+
+// https://blog.csdn.net/dcrmg/article/details/53556664
+
 const char *vertexShaderSource ="#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "layout (location = 1) in vec3 aColor;\n"

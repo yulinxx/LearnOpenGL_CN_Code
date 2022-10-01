@@ -67,6 +67,8 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    // glVertexAttribPointer 第一个参数 0/1 对应 顶点着色器(Vertex Shader)的 layout (location = 0/1) 
+    // glVertexAttribPointer(序号,几个,什么类型的值,需要标准化吗,一行数据量多少字节,本属性从哪个字节开始);
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);

@@ -1,3 +1,5 @@
+// https://learnopengl.com/Guest-Articles/2020/Skeletal-Animation
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
